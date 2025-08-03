@@ -1,7 +1,8 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
 import {
   accounts,
@@ -20,15 +21,17 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      isAnonymous?: boolean;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    isAnonymous?: boolean;
+    // ...other properties
+    // role: UserRole;
+  }
 }
 
 /**
@@ -38,16 +41,24 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    DiscordProvider,
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    CredentialsProvider({
+      id: "anonymous",
+      name: "Anonymous",
+      credentials: {},
+      async authorize() {
+        const anonymousUser = {
+          id: `anon_${crypto.randomUUID()}`,
+          email: `anon_${Date.now()}@anonymous.local`,
+          name: "Anonymous User",
+          isAnonymous: true,
+        };
+        return anonymousUser;
+      },
+    }),
   ],
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -56,12 +67,44 @@ export const authConfig = {
     verificationTokensTable: verificationTokens,
   }),
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "anonymous") {
+        const existingUser = await db.query.users.findFirst({
+          where: eq(users.email, user.email!),
+        });
+        
+        if (!existingUser) {
+          await db.insert(users).values({
+            id: user.id!,
+            email: user.email!,
+            name: user.name ?? "Anonymous User",
+            isAnonymous: true,
+          });
+        }
+        return true;
+      }
+      return true;
+    },
     session: ({ session, user }) => ({
       ...session,
       user: {
         ...session.user,
         id: user.id,
+        isAnonymous: user.isAnonymous ?? false,
       },
     }),
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+        token.isAnonymous = user.isAnonymous ?? false;
+      }
+      return token;
+    },
+  },
+  session: {
+    strategy: "jwt",
+  },
+  pages: {
+    signIn: "/auth/signin",
   },
 } satisfies NextAuthConfig;
