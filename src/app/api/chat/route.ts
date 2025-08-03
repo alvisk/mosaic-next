@@ -3,26 +3,107 @@ import { NextResponse } from 'next/server';
 
 export interface ChatRequest {
   message: string;
-  conversation_id?: string;
+  session_id?: string;
+}
+
+// Types based on message.json structure
+export interface MessageProperties {
+  text_color: string;
+  background_color: string;
+  edited: boolean;
+  source: {
+    id: string;
+    display_name: string;
+    source: string;
+  };
+  icon: string;
+  allow_markdown: boolean;
+  positive_feedback: null | boolean;
+  state: 'complete' | 'in-progress' | 'pending';
+  targets: unknown[];
+}
+
+export interface MessageData {
+  timestamp: string;
+  sender: 'Machine' | 'User';
+  sender_name: string;
+  session_id: string;
+  text: string;
+  files: string[];
+  error: boolean;
+  edit: boolean;
+  properties: MessageProperties;
+  category: 'message';
+  content_blocks: unknown[];
+  id: string;
+  flow_id: string;
+  duration: null | number;
+}
+
+export interface MessageResult {
+  text_key: string;
+  data: MessageData;
+  default_value: string;
+  text: string;
+  sender: 'Machine' | 'User';
+  sender_name: string;
+  files: string[];
+  session_id: string;
+  timestamp: string;
+  flow_id: string;
+  error: boolean;
+  edit: boolean;
+  properties: MessageProperties;
+  category: 'message';
+  content_blocks: unknown[];
+  duration: null | number;
+}
+
+export interface ChatOutputResult {
+  results: {
+    message: MessageResult;
+  };
+  artifacts: {
+    message: string;
+    sender: 'Machine' | 'User';
+    sender_name: string;
+    files: string[];
+    type: 'object';
+  };
+  outputs: {
+    message: {
+      message: string;
+      type: 'text';
+    };
+  };
+  logs: {
+    message: unknown[];
+  };
+  messages: Array<{
+    message: string;
+    sender: 'Machine' | 'User';
+    sender_name: string;
+    session_id: string;
+    stream_url: null | string;
+    component_id: string;
+    files: string[];
+    type: 'text';
+  }>;
+  timedelta: null | number;
+  duration: null | number;
+  component_display_name: string;
+component_id: string;
+  used_frozen_result: boolean;
 }
 
 export interface ChatResponse {
-  success: boolean;
-  response: string;
-  analysis?: {
-    confidence: number;
-    sources: string[];
-    technical_indicators: Record<string, string | number>;
-    valuation_models: Record<string, number>;
-    risk_metrics: Record<string, string>;
-    recommendation: {
-      action: 'BUY' | 'SELL' | 'HOLD';
-      target_price: number;
-      stop_loss: number;
-      confidence: number;
+  session_id: string;
+  outputs: Array<{
+    inputs: {
+      input_value: string;
     };
-  };
-  conversation_id: string;
+    outputs: ChatOutputResult[];
+  }>;
 }
 
 // Mock responses for different types of queries
@@ -140,8 +221,112 @@ function detectQueryType(message: string): keyof typeof mockResponses | 'general
   return 'general';
 }
 
+// Helper function to create a message in the message.json format
+function createMessageOutput(
+  text: string,
+  sessionId: string,
+  inputValue: string,
+  source: { id: string; display_name: string; source: string },
+  componentId: string
+): ChatResponse {
+  const messageId = generateMessageId();
+  const timestamp = getCurrentTimestamp();
+  const isoTimestamp = getISOTimestamp();
+
+  const messageData: MessageData = {
+    timestamp,
+    sender: 'Machine',
+    sender_name: 'AI',
+    session_id: sessionId,
+    text,
+    files: [],
+    error: false,
+    edit: false,
+    properties: {
+      text_color: '',
+      background_color: '',
+      edited: false,
+      source,
+      icon: source.display_name === 'Anthropic' ? 'Anthropic' : 'code',
+      allow_markdown: false,
+      positive_feedback: null,
+      state: 'complete',
+      targets: []
+    },
+    category: 'message',
+    content_blocks: [],
+    id: messageId,
+    flow_id: sessionId,
+    duration: null
+  };
+
+  const outputResult: ChatOutputResult = {
+    results: {
+      message: {
+        text_key: 'text',
+        data: messageData,
+        default_value: '',
+        text,
+        sender: 'Machine',
+        sender_name: 'AI',
+        files: [],
+        session_id: sessionId,
+        timestamp: isoTimestamp,
+        flow_id: sessionId,
+        error: false,
+        edit: false,
+        properties: messageData.properties,
+        category: 'message',
+        content_blocks: [],
+        duration: null
+      }
+    },
+    artifacts: {
+      message: text,
+      sender: 'Machine',
+      sender_name: 'AI',
+      files: [],
+      type: 'object'
+    },
+    outputs: {
+      message: {
+        message: text,
+        type: 'text'
+      }
+    },
+    logs: {
+      message: []
+    },
+    messages: text ? [{
+      message: text,
+      sender: 'Machine',
+      sender_name: 'AI',
+      session_id: sessionId,
+      stream_url: null,
+      component_id: componentId,
+      files: [],
+      type: 'text'
+    }] : [],
+    timedelta: null,
+    duration: null,
+    component_display_name: 'Chat Output',
+    component_id: componentId,
+    used_frozen_result: false
+  };
+
+  return {
+    session_id: sessionId,
+    outputs: [{
+      inputs: {
+        input_value: inputValue
+      },
+      outputs: [outputResult]
+    }]
+  };
+}
+
 // Generate a general response for queries that don't match specific patterns
-function generateGeneralResponse(_message: string): ChatResponse {
+function generateGeneralResponse(message: string, sessionId: string): ChatResponse {
   const responses = [
     "I can help you analyze various cryptocurrencies and market conditions. Try asking about Bitcoin, Ethereum, or general market trends for detailed analysis.",
     "For comprehensive crypto analysis, please specify which cryptocurrency or market aspect you'd like me to examine. I can provide technical analysis, valuation models, and risk assessments.",
@@ -150,21 +335,73 @@ function generateGeneralResponse(_message: string): ChatResponse {
 
   const selectedResponse = responses[Math.floor(Math.random() * responses.length)]!;
 
-  return {
-    success: true,
-    response: selectedResponse,
-    conversation_id: generateConversationId()
-  };
+  return createMessageOutput(
+    selectedResponse,
+    sessionId,
+    message,
+    {
+      id: 'CustomComponent-' + Math.random().toString(36).substr(2, 5),
+      display_name: 'Custom Component',
+      source: 'Custom Component'
+    },
+    'ChatOutput-' + Math.random().toString(36).substr(2, 5)
+  );
 }
 
-function generateConversationId(): string {
-  return 'conv_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+function generateSessionId(): string {
+  // Generate UUID-like session ID
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function generateMessageId(): string {
+  return generateSessionId(); // Using same UUID format for message IDs
+}
+
+function getCurrentTimestamp(): string {
+  return new Date().toISOString().replace('T', ' ').slice(0, -5) + ' UTC';
+}
+
+function getISOTimestamp(): string {
+  return new Date().toISOString();
+}
+
+// Generate crypto analysis response with formatted JSON
+function generateCryptoAnalysisResponse(
+  queryType: keyof typeof mockResponses,
+  message: string,
+  sessionId: string
+): ChatResponse {
+  const mockResponse = mockResponses[queryType];
+
+  // Format the response with analysis data as JSON (similar to message.json)
+  const formattedResponse = `\`\`\`json
+{
+  "value": "${mockResponse.response}",
+  "analysis": ${JSON.stringify(mockResponse.analysis, null, 2)}
+}
+\`\`\``;
+
+  return createMessageOutput(
+    formattedResponse,
+    sessionId,
+    message,
+    {
+      id: 'AnthropicModel-' + Math.random().toString(36).substr(2, 5),
+      display_name: 'Anthropic',
+      source: 'claude-3-7-sonnet-latest'
+    },
+    'ChatOutput-' + Math.random().toString(36).substr(2, 5)
+  );
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json() as ChatRequest;
-    const { message, conversation_id } = body;
+    const { message, session_id } = body;
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json(
@@ -173,25 +410,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Use provided session_id or generate a new one
+    const sessionId = session_id ?? generateSessionId();
+
     // Simulate processing delay
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
 
     const queryType = detectQueryType(message);
 
     if (queryType === 'general') {
-      return NextResponse.json(generateGeneralResponse(message));
+      return NextResponse.json(generateGeneralResponse(message, sessionId));
     }
 
-    const mockResponse = mockResponses[queryType];
-
-    const response: ChatResponse = {
-      success: true,
-      response: mockResponse.response,
-      analysis: mockResponse.analysis,
-      conversation_id: conversation_id ?? generateConversationId()
-    };
-
-    return NextResponse.json(response);
+    // Generate crypto analysis response in message.json format
+    return NextResponse.json(generateCryptoAnalysisResponse(queryType, message, sessionId));
 
   } catch (error) {
     console.error('Chat API error:', error);

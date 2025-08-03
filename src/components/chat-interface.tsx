@@ -312,6 +312,9 @@ export default function ChatInterface() {
 
   return (
     <div className="App chat-page">
+      <header className="header">
+        <Image src="/logo.png" alt="Mosaic Logo" width={100} height={35} />
+      </header>
       <div className="chat-container">
         <aside className="chat-sidebar">
           <button className="new-chat-button" onClick={startNewChat}>
