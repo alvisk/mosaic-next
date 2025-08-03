@@ -1,0 +1,186 @@
+{
+  "session_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+  "outputs": [
+    {
+      "inputs": { "input_value": "hello world!" },
+      "outputs": [
+        {
+          "results": {
+            "message": {
+              "text_key": "text",
+              "data": {
+                "timestamp": "2025-08-03 10:20:13 UTC",
+                "sender": "Machine",
+                "sender_name": "AI",
+                "session_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+                "text": "```json\n{\n  \"value\": \"The input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be true or false.\\n---\\nThe input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be false.\"\n}\n```",
+                "files": [],
+                "error": false,
+                "edit": false,
+                "properties": {
+                  "text_color": "",
+                  "background_color": "",
+                  "edited": false,
+                  "source": {
+                    "id": "CustomComponent-fTfOz",
+                    "display_name": "Custom Component",
+                    "source": "Custom Component"
+                  },
+                  "icon": "code",
+                  "allow_markdown": false,
+                  "positive_feedback": null,
+                  "state": "complete",
+                  "targets": []
+                },
+                "category": "message",
+                "content_blocks": [],
+                "id": "8082fc43-ccf0-483e-858e-609594c9392a",
+                "flow_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+                "duration": null
+              },
+              "default_value": "",
+              "text": "```json\n{\n  \"value\": \"The input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be true or false.\\n---\\nThe input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be false.\"\n}\n```",
+              "sender": "Machine",
+              "sender_name": "AI",
+              "files": [],
+              "session_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+              "timestamp": "2025-08-03T10:20:13+00:00",
+              "flow_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+              "error": false,
+              "edit": false,
+              "properties": {
+                "text_color": "",
+                "background_color": "",
+                "edited": false,
+                "source": {
+                  "id": "CustomComponent-fTfOz",
+                  "display_name": "Custom Component",
+                  "source": "Custom Component"
+                },
+                "icon": "code",
+                "allow_markdown": false,
+                "positive_feedback": null,
+                "state": "complete",
+                "targets": []
+              },
+              "category": "message",
+              "content_blocks": [],
+              "duration": null
+            }
+          },
+          "artifacts": {
+            "message": "```json\n\n{\n\n  \"value\": \"The input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be true or false.\\n---\\nThe input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be false.\"\n\n}\n\n```",
+            "sender": "Machine",
+            "sender_name": "AI",
+            "files": [],
+            "type": "object"
+          },
+          "outputs": {
+            "message": {
+              "message": "```json\n{\n  \"value\": \"The input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be true or false.\\n---\\nThe input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be false.\"\n}\n```",
+              "type": "text"
+            }
+          },
+          "logs": { "message": [] },
+          "messages": [
+            {
+              "message": "```json\n\n{\n\n  \"value\": \"The input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be true or false.\\n---\\nThe input \\\"hello world!\\\" is not a statement that can be evaluated as true or false, so it cannot be classified as lying. It's simply a greeting or a common first programming output phrase. Lying requires intentionally stating something false with the purpose of deceiving someone, and this input doesn't make any factual claims that could be false.\"\n\n}\n\n```",
+              "sender": "Machine",
+              "sender_name": "AI",
+              "session_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+              "stream_url": null,
+              "component_id": "ChatOutput-6NgZ2",
+              "files": [],
+              "type": "text"
+            }
+          ],
+          "timedelta": null,
+          "duration": null,
+          "component_display_name": "Chat Output",
+          "component_id": "ChatOutput-6NgZ2",
+          "used_frozen_result": false
+        },
+        {
+          "results": {
+            "message": {
+              "text_key": "text",
+              "data": {
+                "timestamp": "2025-08-03 10:20:14 UTC",
+                "sender": "Machine",
+                "sender_name": "AI",
+                "session_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+                "text": "",
+                "files": [],
+                "error": false,
+                "edit": false,
+                "properties": {
+                  "text_color": "",
+                  "background_color": "",
+                  "edited": false,
+                  "source": {
+                    "id": "AnthropicModel-4RtHD",
+                    "display_name": "Anthropic",
+                    "source": "claude-3-7-sonnet-latest"
+                  },
+                  "icon": "Anthropic",
+                  "allow_markdown": false,
+                  "positive_feedback": null,
+                  "state": "complete",
+                  "targets": []
+                },
+                "category": "message",
+                "content_blocks": [],
+                "id": "1b7bebd4-2f91-45da-9354-8f4a6ba62840",
+                "flow_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+                "duration": null
+              },
+              "default_value": "",
+              "text": "",
+              "sender": "Machine",
+              "sender_name": "AI",
+              "files": [],
+              "session_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+              "timestamp": "2025-08-03T10:20:14+00:00",
+              "flow_id": "9a7b119d-5266-4285-b5dc-b893598e506d",
+              "error": false,
+              "edit": false,
+              "properties": {
+                "text_color": "",
+                "background_color": "",
+                "edited": false,
+                "source": {
+                  "id": "AnthropicModel-4RtHD",
+                  "display_name": "Anthropic",
+                  "source": "claude-3-7-sonnet-latest"
+                },
+                "icon": "Anthropic",
+                "allow_markdown": false,
+                "positive_feedback": null,
+                "state": "complete",
+                "targets": []
+              },
+              "category": "message",
+              "content_blocks": [],
+              "duration": null
+            }
+          },
+          "artifacts": {
+            "message": "",
+            "sender": "Machine",
+            "sender_name": "AI",
+            "files": [],
+            "type": "object"
+          },
+          "outputs": { "message": { "message": "", "type": "text" } },
+          "logs": { "message": [] },
+          "messages": [],
+          "timedelta": null,
+          "duration": null,
+          "component_display_name": "Chat Output",
+          "component_id": "ChatOutput-lFNoN",
+          "used_frozen_result": false
+        }
+      ]
+    }
+  ]
+}
